@@ -247,14 +247,12 @@
                 window.secondarySecretTimer = setTimeout(() => setSecondarySecretClicks(0), 3000);
             };
 
-            // 核心逻辑：正确点击马儿
             const handleCatch = (id, wish, e) => {
-                if (e) e.stopPropagation(); // 阻止点击事件传给背景
+                if (e) e.stopPropagation(); 
                 
                 let bonus = 0;
                 let finalWish = wish;
                 
-                // 处理连击
                 setCombo(prev => {
                     const next = prev + 1;
                     if (next === 18) {
@@ -262,7 +260,7 @@
                         bonus = 888;
                         finalWish = lang === 'zh' ? "连中十八！马力全开！+888" : "18 Hits Streak! Power Up! +888";
                         setCurrentWish(finalWish);
-                        return 0; // 达到 18 后重置
+                        return 0; 
                     }
                     setCurrentWish(wish);
                     return next;
@@ -373,13 +371,11 @@
             return (
                 <div className="h-full w-full bg-[#b91c1c] font-sans text-white overflow-hidden flex flex-col items-center justify-center p-1 sm:p-2 relative" onClick={startAudio}>
                     
-                    {/* 秘籍区域 */}
                     <div className="fixed top-0 left-0 w-24 h-24 z-[99999] cursor-default bg-transparent" onClick={triggerSecret} />
                     <div className="fixed bottom-0 right-0 w-24 h-24 z-[99999] cursor-default bg-transparent" onClick={triggerSecondarySecret} />
 
                     {hasInteracted && currentSongUrl && <audio ref={audioRef} src={currentSongUrl} autoPlay loop muted={isMuted} />}
 
-                    {/* 控制栏 */}
                     <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
                         <div className="bg-black/40 p-1.5 rounded-full backdrop-blur-md border border-white/20 flex items-center gap-2 sm:gap-3">
                             <button onClick={goHome} className="bg-red-600 hover:bg-red-500 text-yellow-300 w-8 h-8 rounded-full flex items-center justify-center border border-white/10 transition-colors shadow-lg active:scale-90" title="Home">
@@ -404,7 +400,6 @@
                             <div className="bg-black/20 px-2 py-1 rounded-full border border-white/20 flex items-center gap-1"><Icons.Timer /> <span>{timeLeft}s</span></div>
                         </div>
 
-                        {/* 点击背景重置连击 */}
                         <div ref={gameAreaRef} onClick={() => setCombo(0)} className="flex-grow relative bg-[url('https://www.transparenttextures.com/patterns/oriental-tiles.png')] bg-repeat overflow-hidden flex flex-col cursor-crosshair">
                             {gameState === 'START' && (
                                 <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-red-950/40 backdrop-blur-[2px] p-2 text-center">
@@ -418,6 +413,8 @@
                                             <p className="mb-1">This game is for 2026 CNY celebration only. Non-commercial use. Developer not liable for any misuse. The background music copyright belongs to Malaysian digital creator Bingyen.</p>
                                             <p className="mb-2">本游戏仅供2026马年新春庆祝使用，禁止商用。开发者不承担误用责任。</p>
                                             <p className="font-bold border-t border-red-900/5 pt-1 uppercase">音乐版权归郑斌彦（Bingyen）2026贺岁系列所有。</p>
+                                            {/* 已移动署名至此，保持低调 */}
+                                            <p className="mt-1 text-[6px] sm:text-[8px] opacity-40 lowercase italic tracking-wider">Created with Love by Andy Siah</p>
                                         </div>
                                     </div>
                                 </div>
