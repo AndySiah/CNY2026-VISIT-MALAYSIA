@@ -158,10 +158,7 @@
             const [hasInteracted, setHasInteracted] = useState(false);
             const [floatingTexts, setFloatingTexts] = useState([]);
             const [currentSongUrl, setCurrentSongUrl] = useState('');
-            
-            // 状态：连击计数
             const [combo, setCombo] = useState(0);
-            
             const [secretClicks, setSecretClicks] = useState(0);
             const [secondarySecretClicks, setSecondarySecretClicks] = useState(0);
             const [isCapturing, setIsCapturing] = useState(false);
@@ -211,7 +208,7 @@
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
                 if (ctx.state === 'suspended') ctx.resume();
                 if (audioRef.current) { 
-                    audioRef.current.muted = false; 
+                    audioRef.current.muted = isMuted; 
                     audioRef.current.play().catch(() => {}); 
                 }
             };
@@ -247,13 +244,10 @@
                 window.secondarySecretTimer = setTimeout(() => setSecondarySecretClicks(0), 3000);
             };
 
-            // 核心逻辑：正确点击马儿
             const handleCatch = (id, wish, e) => {
                 if (e) e.stopPropagation(); 
-                
                 let bonus = 0;
                 let finalWish = wish;
-                
                 setCombo(prev => {
                     const next = prev + 1;
                     if (next === 18) {
@@ -266,10 +260,8 @@
                     setCurrentWish(wish);
                     return next;
                 });
-                
                 setScore(prev => prev + 18 + bonus);
                 setActiveHorses(prev => prev.filter(h => h.id !== id));
-                
                 if (!gameAreaRef.current) return;
                 const rect = gameAreaRef.current.getBoundingClientRect();
                 const clientX = e.clientX || (e.touches && e.touches[0].clientX);
@@ -287,6 +279,10 @@
             const captureAndShare = async () => {
                 if (!resultPanelRef.current) return;
                 setIsCapturing(true);
+                const shareUrl = "https://cny-2026-visit-malaysia.vercel.app/";
+                // 用户要求的分享文案
+                const caption = "Vibe coding my way into 2026! Check out this CNY mini-game featuring my favorite Bingyen tracks. 🎶✨";
+                
                 try {
                     document.activeElement?.blur();
                     const canvas = await html2canvas(resultPanelRef.current, {
@@ -294,13 +290,20 @@
                         ignoreElements: (el) => el.classList.contains('no-capture')
                     });
                     const imgData = canvas.toDataURL('image/png');
-                    const message = lang === 'zh' ? `${userName || '我'}在《马到功成》接到了 ${score.toLocaleString()} 分好运！` : `${userName || 'I'} captured ${score.toLocaleString()} points of Luck!`;
+                    const message = lang === 'zh' 
+                        ? `${userName || '我'}在《马到功成》接到了 ${score.toLocaleString()} 分好运！\n\n${caption}\n\n快来一起接福：${shareUrl}` 
+                        : `${userName || 'I'} captured ${score.toLocaleString()} points of Luck!\n\n${caption}\n\nJoin the fun: ${shareUrl}`;
 
                     if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([], "a.png")] })) {
                         const res = await fetch(imgData);
                         const blob = await res.blob();
                         const file = new File([blob], "result.png", { type: "image/png" });
-                        await navigator.share({ files: [file], title: t.title, text: message });
+                        await navigator.share({ 
+                            files: [file], 
+                            title: t.title, 
+                            text: message,
+                            url: shareUrl
+                        });
                     } else {
                         const link = document.createElement('a');
                         link.download = `Result-${score}.png`;
@@ -325,6 +328,7 @@
                 setCurrentSongUrl(PLAYLIST[nextIdx]);
                 if (audioRef.current) {
                     audioRef.current.load();
+                    audioRef.current.muted = isMuted;
                     audioRef.current.play().catch(() => {});
                 }
             };
@@ -369,6 +373,16 @@
                 setCombo(0);
             };
 
+            const toggleMute = (e) => {
+                e.stopPropagation();
+                const nextMute = !isMuted;
+                setIsMuted(nextMute);
+                if(audioRef.current) {
+                    audioRef.current.muted = nextMute;
+                    if(!nextMute) audioRef.current.play().catch(() => {});
+                }
+            };
+
             return (
                 <div className="h-full w-full bg-[#b91c1c] font-sans text-white overflow-hidden flex flex-col items-center justify-center p-1 sm:p-2 relative" onClick={startAudio}>
                     
@@ -386,7 +400,7 @@
                             <button onClick={nextSong} className="bg-yellow-600 hover:bg-yellow-500 text-white w-8 h-8 rounded-full flex items-center justify-center border border-white/10 shadow-lg active:scale-90" title="Next Song">
                                 <Icons.SkipForward />
                             </button>
-                            <button onClick={(e) => { e.stopPropagation(); setIsMuted(!isMuted); if(audioRef.current) audioRef.current.muted = !isMuted; }} className="bg-yellow-500 w-8 h-8 rounded-full text-red-800 flex items-center justify-center">{isMuted ? <Icons.VolumeX /> : <Icons.Volume2 />}</button>
+                            <button onClick={toggleMute} className="bg-yellow-500 w-8 h-8 rounded-full text-red-800 flex items-center justify-center">{isMuted ? <Icons.VolumeX /> : <Icons.Volume2 />}</button>
                         </div>
                     </div>
 
@@ -454,7 +468,15 @@
                                             <div className="hidden block-in-capture text-xl font-black text-red-700 mb-2">{userName || 'GUEST'}</div>
                                         </div>
                                         <p className="text-[10px] sm:text-sm mt-4 mb-1 uppercase font-bold opacity-70">{t.resultBody}</p>
-                                        <span className="text-3xl sm:text-6xl font-black text-red-600 mb-4 block">{score.toLocaleString()}</span> 
+                                        <span className="text-3xl sm:text-6xl font-black text-red-600 mb-2 block">{score.toLocaleString()}</span> 
+                                        
+                                        <div className="relative mb-4 group w-full px-4">
+                                            <p className="text-[8px] sm:text-[10px] font-mono opacity-60 hover:opacity-100 select-text cursor-text bg-red-50 py-1 rounded border border-red-100/50 break-all transition-opacity" onClick={(e) => e.stopPropagation()}>
+                                                https://cny-2026-visit-malaysia.vercel.app/
+                                            </p>
+                                            <div className="absolute -top-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 text-[6px] uppercase font-bold text-red-400 pointer-events-none transition-opacity">Select to copy</div>
+                                        </div>
+
                                         <div className="flex flex-col gap-2 w-full no-capture">
                                             <button onClick={startGame} className="bg-red-600 text-yellow-300 w-full py-2.5 rounded-full text-base font-black shadow-lg flex items-center justify-center gap-2 uppercase tracking-tighter active:scale-95"><Icons.Rotate /> {t.retry}</button>
                                             <button onClick={captureAndShare} disabled={isCapturing} className={`bg-yellow-500 text-red-900 w-full py-2.5 rounded-full text-base font-black shadow-md flex items-center justify-center gap-2 uppercase tracking-tighter active:scale-95 ${isCapturing ? 'opacity-50' : ''}`}>
