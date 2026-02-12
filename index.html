@@ -247,6 +247,7 @@
                 window.secondarySecretTimer = setTimeout(() => setSecondarySecretClicks(0), 3000);
             };
 
+            // 核心逻辑：正确点击马儿
             const handleCatch = (id, wish, e) => {
                 if (e) e.stopPropagation(); 
                 
@@ -413,8 +414,7 @@
                                             <p className="mb-1">This game is for 2026 CNY celebration only. Non-commercial use. Developer not liable for any misuse. The background music copyright belongs to Malaysian digital creator Bingyen.</p>
                                             <p className="mb-2">本游戏仅供2026马年新春庆祝使用，禁止商用。开发者不承担误用责任。</p>
                                             <p className="font-bold border-t border-red-900/5 pt-1 uppercase">音乐版权归郑斌彦（Bingyen）2026贺岁系列所有。</p>
-                                            {/* 已移动署名至此，保持低调 */}
-                                            <p className="mt-1 text-[6px] sm:text-[8px] opacity-40 lowercase italic tracking-wider">Created with Love by Andy Siah</p>
+                                            <p className="mt-1 text-[6px] sm:text-[8px] opacity-40 lowercase italic tracking-wider">Created with Love by andysiah</p>
                                         </div>
                                     </div>
                                 </div>
