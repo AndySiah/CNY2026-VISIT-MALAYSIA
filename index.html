@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>马到功成 2026 - GHL Edition</title>
+    <title>马到功成 2026 - VISIT MALAYSIA</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- React & ReactDOM -->
@@ -14,67 +14,56 @@
     <!-- HTML2Canvas for Screenshots -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-    <!-- Firebase SDKs -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
         window.FB_SDK = { initializeApp, getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken, getFirestore, collection, addDoc, serverTimestamp };
     </script>
 
     <style>
-        /* 核心动画 */
         @keyframes float-up-fast {
             0% { transform: translateY(0) scale(0.5); opacity: 0; }
             20% { opacity: 1; transform: translateY(-30px) scale(1.3); }
             100% { transform: translateY(-120px) scale(1); opacity: 0; }
         }
         .animate-float-up-fast { animation: float-up-fast 0.9s ease-out forwards; }
-
         @keyframes bounce-short { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
         .animate-bounce-short { animation: bounce-short 0.5s ease-in-out infinite; }
-
-        @keyframes gallop-bg {
-            0% { transform: translateX(250%) scale(var(--horse-scale, 0.8)); opacity: 0; }
-            10% { opacity: var(--horse-opacity, 0.15); }
-            90% { opacity: var(--horse-opacity, 0.15); }
-            100% { transform: translateX(-150%) scale(var(--horse-scale, 0.8)); opacity: 0; }
-        }
-        .animate-gallop-bg { animation: gallop-bg var(--horse-speed, 10s) linear infinite; }
-
         .scale-in-center { animation: scale-in-center 0.4s cubic-bezier(0.175, 0.885, 0.320, 1.275) both; }
         @keyframes scale-in-center { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         
-        body, html { 
-            margin: 0; 
-            padding: 0; 
-            height: 100%; 
-            overflow: hidden; 
-            background-color: #b91c1c; 
+        @keyframes pulse-soft {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.02); }
         }
+        .animate-pulse-soft { animation: pulse-soft 2s ease-in-out infinite; }
+
+        @keyframes text-shine {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+        @keyframes blink-glow {
+            0%, 100% { filter: drop-shadow(0 0 5px rgba(251, 191, 36, 0.6)); }
+            50% { filter: drop-shadow(0 0 20px rgba(251, 191, 36, 1)); }
+        }
+        .headline-shining {
+            background: linear-gradient(90deg, #b91c1c, #fbbf24, #ffffff, #fbbf24, #b91c1c);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: text-shine 3s linear infinite, blink-glow 2s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #b91c1c; }
         #root { height: 100vh; position: relative; z-index: 10; display: flex; align-items: center; justify-content: center; }
-
-        #fireworksCanvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1000;
-        }
-
+        #fireworksCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1000; }
         input:focus { outline: none; border-color: #fbbf24; }
 
         @media (orientation: landscape) and (max-height: 500px) {
-            .game-panel {
-                height: 74vh !important; 
-                width: auto !important;
-                aspect-ratio: 16 / 9;
-                border-width: 4px !important;
-                border-radius: 1.5rem !important;
-            }
+            .game-panel { height: 74vh !important; width: auto !important; aspect-ratio: 16 / 9; border-width: 4px !important; border-radius: 1.5rem !important; }
         }
     </style>
 </head>
@@ -108,41 +97,24 @@
         ];
 
         const HORSE_WISHES = [
-            { zh: "马上暴富", en: "Instant Wealth" },
-            { zh: "马到巅峰", en: "Peak Performance" },
-            { zh: "马上开挂", en: "Level Up Instantly" },
-            { zh: "全年狂飙", en: "Unstoppable Year" },
-            { zh: "身价翻倍", en: "Double Your Worth" },
-            { zh: "流量爆棚", en: "Viral Success" },
-            { zh: "马上出圈", en: "Break the Internet" },
-            { zh: "马上成交", en: "Close Deals Swiftly" },
-            { zh: "业绩飙升", en: "Performance Surge" },
-            { zh: "马上升级", en: "Immediate Upgrade" },
-            { zh: "财源滚滚", en: "Rolling in Riches" },
-            { zh: "马上签单", en: "Instant Contracts" },
-            { zh: "马上躺赢", en: "Effortless Wins" },
-            { zh: "一马当关", en: "Leading the Charge" },
+            { zh: "马上暴富", en: "Instant Wealth" }, { zh: "马到巅峰", en: "Peak Performance" },
+            { zh: "马上开挂", en: "Level Up Instantly" }, { zh: "全年狂飙", en: "Unstoppable Year" },
+            { zh: "身价翻倍", en: "Double Your Worth" }, { zh: "流量爆棚", en: "Viral Success" },
+            { zh: "马上出圈", en: "Break the Internet" }, { zh: "马上成交", en: "Close Deals Swiftly" },
+            { zh: "业绩飙升", en: "Performance Surge" }, { zh: "马上升级", en: "Immediate Upgrade" },
+            { zh: "财源滚滚", en: "Rolling in Riches" }, { zh: "马上签单", en: "Instant Contracts" },
+            { zh: "马上躺赢", en: "Effortless Wins" }, { zh: "一马当关", en: "Leading the Charge" },
             { zh: "马到功成", en: "Swift Achievement" }
         ];
 
         const TEXTS = {
             zh: {
-                title: "马到功成", subtitle: ">>> Visit Malaysia 2026 <<<",
-                startBtn: "开始接福", musicHint: "点击按钮解锁大马贺岁金曲 🎵",
-                score: "分数", time: "时间", gameHint: "点击马儿，收集新年祝福！",
-                resultTitle: "HENG ONG HUAT!", resultBody: "接福总分", resultUnit: "分好运！",
-                retry: "再玩一次", huat: "Huat 啊!", shareBtn: "生成战报并分享",
-                nameLabel: "接福人：", namePlaceholder: "输入您的名字",
-                sharingHint: "正在生成高清战报..."
+                title: "马到功成", subtitle: ">>> Visit Malaysia 2026 <<<", startBtn: "开始接福", score: "分数", time: "时间", gameHint: "点击马儿，收集新年祝福！", resultTitle: "HENG ONG HUAT!", resultBody: "福气指数", retry: "再玩一次", huat: "Huat 啊!", shareBtn: "生成战报并分享", nameLabel: "福气榜主：", namePlaceholder: "输入您的名字", sharingHint: "正在生成高清战报...",
+                soundHint: "小提示：喜欢听歌的记得打开音量🔊"
             },
             en: {
-                title: "Swift Success", subtitle: ">>> Visit Malaysia 2026 <<<",
-                startBtn: "Catch Blessings", musicHint: "Tap to unlock MY Festive Hits 🎵",
-                score: "Score", time: "Time", gameHint: "Tap the horses to catch blessings!",
-                resultTitle: "HENG ONG HUAT!", resultBody: "Total Blessings", resultUnit: "Points of Luck!",
-                retry: "Play Again", huat: "Huat Ah!", shareBtn: "Share Screenshot",
-                nameLabel: "Blessed Receiver: ", namePlaceholder: "Enter your name",
-                sharingHint: "Generating Result Image..."
+                title: "Swift Success", subtitle: ">>> Visit Malaysia 2026 <<<", startBtn: "Collect Fortunes", score: "Score", time: "Time", gameHint: "Tap the horses to collect fortunes!", resultTitle: "HENG ONG HUAT!", resultBody: "Total Fortune Points", retry: "Play Again", huat: "Huat Ah!", shareBtn: "Share Screenshot", nameLabel: "Fortune Receiver: ", namePlaceholder: "Enter your name", sharingHint: "Generating Result Image...",
+                soundHint: "Hint: Turn on volume to enjoy CNY hits🔊"
             }
         };
 
@@ -157,10 +129,11 @@
             const [isMuted, setIsMuted] = useState(false);
             const [hasInteracted, setHasInteracted] = useState(false);
             const [floatingTexts, setFloatingTexts] = useState([]);
-            const [currentSongUrl, setCurrentSongUrl] = useState('');
+            const [currentSongUrl, setCurrentSongUrl] = useState(PLAYLIST[Math.floor(Math.random() * PLAYLIST.length)]);
             const [combo, setCombo] = useState(0);
             const [secretClicks, setSecretClicks] = useState(0);
             const [secondarySecretClicks, setSecondarySecretClicks] = useState(0);
+            const [thirdSecretClicks, setThirdSecretClicks] = useState(0);
             const [isCapturing, setIsCapturing] = useState(false);
 
             const gameAreaRef = useRef(null);
@@ -171,45 +144,46 @@
             const launchFireworks = () => {
                 const canvas = document.getElementById('fireworksCanvas');
                 const ctx = canvas.getContext('2d');
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
+                canvas.width = window.innerWidth; canvas.height = window.innerHeight;
                 const particles = [];
                 const colors = ['#fbbf24', '#ef4444', '#ffffff', '#f59e0b', '#fde047'];
                 class Particle {
-                    constructor(x, y, color) {
-                        this.x = x; this.y = y; this.color = color;
-                        this.radius = Math.random() * 3 + 1;
-                        this.velocity = { x: (Math.random() - 0.5) * 12, y: (Math.random() - 0.5) * 12 };
-                        this.life = 100;
-                    }
-                    draw() {
-                        ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                        ctx.fillStyle = this.color; ctx.globalAlpha = this.life / 100; ctx.fill();
-                    }
+                    constructor(x, y, color) { this.x = x; this.y = y; this.color = color; this.radius = Math.random() * 3 + 1; this.velocity = { x: (Math.random() - 0.5) * 12, y: (Math.random() - 0.5) * 12 }; this.life = 100; }
+                    draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fillStyle = this.color; ctx.globalAlpha = this.life / 100; ctx.fill(); }
                     update() { this.x += this.velocity.x; this.y += this.velocity.y; this.velocity.y += 0.05; this.life -= 1.5; }
                 }
-                const createFirework = (x, y) => {
-                    for (let i = 0; i < 50; i++) particles.push(new Particle(x, y, colors[Math.floor(Math.random() * colors.length)]));
-                };
+                const createFirework = (x, y) => { for (let i = 0; i < 50; i++) particles.push(new Particle(x, y, colors[Math.floor(Math.random() * colors.length)])); };
                 let timer = 0;
                 const animate = () => {
-                    if (timer < 180) {
-                        ctx.clearRect(0, 0, canvas.width, canvas.height);
-                        if (timer % 15 === 0) createFirework(Math.random() * canvas.width, Math.random() * canvas.height * 0.7);
-                        particles.forEach((p, i) => { p.update(); p.draw(); if (p.life <= 0) particles.splice(i, 1); });
-                        timer++; requestAnimationFrame(animate);
-                    } else { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+                    if (timer < 180) { ctx.clearRect(0, 0, canvas.width, canvas.height); if (timer % 15 === 0) createFirework(Math.random() * canvas.width, Math.random() * canvas.height * 0.7); particles.forEach((p, i) => { p.update(); p.draw(); if (p.life <= 0) particles.splice(i, 1); }); timer++; requestAnimationFrame(animate); }
+                    else { ctx.clearRect(0, 0, canvas.width, canvas.height); }
                 };
                 animate();
             };
 
-            const startAudio = () => {
+            // 深度优化：针对移动端 Chrome 显式解锁音频通道
+            const startAudio = (e) => {
+                if (hasInteracted) return;
                 setHasInteracted(true);
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                if (ctx.state === 'suspended') ctx.resume();
-                if (audioRef.current) { 
-                    audioRef.current.muted = isMuted; 
-                    audioRef.current.play().catch(() => {}); 
+                
+                // 1. 显式恢复/创建 AudioContext (必须在物理交互的回调中)
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) {
+                    const ctx = new AudioContext();
+                    if (ctx.state === 'suspended') ctx.resume();
+                }
+
+                // 2. 物理触发 Audio 播放
+                if (audioRef.current) {
+                    audioRef.current.muted = isMuted;
+                    // 先 load 确保 buffer 准备就绪
+                    audioRef.current.load();
+                    const playPromise = audioRef.current.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(error => {
+                            console.log("Audio play blocked by browser. This is normal if user hasn't clicked yet.", error);
+                        });
+                    }
                 }
             };
 
@@ -222,9 +196,7 @@
                     setSecretClicks(0);
                     setCurrentWish("恭喜发财! 88888888 UNLOCKED!");
                     launchFireworks();
-                } else {
-                    setSecretClicks(nextCount);
-                }
+                } else { setSecretClicks(nextCount); }
                 clearTimeout(window.secretTimer);
                 window.secretTimer = setTimeout(() => setSecretClicks(0), 3000);
             };
@@ -237,28 +209,31 @@
                     setScore(8888);
                     setSecondarySecretClicks(0);
                     setCurrentWish("发财顺顺利利! 8888 UNLOCKED!");
-                } else {
-                    setSecondarySecretClicks(nextCount);
-                }
+                } else { setSecondarySecretClicks(nextCount); }
                 clearTimeout(window.secondarySecretTimer);
                 window.secondarySecretTimer = setTimeout(() => setSecondarySecretClicks(0), 3000);
+            };
+
+            const triggerThirdSecret = (e) => {
+                if(e) e.stopPropagation();
+                startAudio();
+                const nextCount = thirdSecretClicks + 1;
+                if (nextCount === 8) {
+                    setScore(888);
+                    setThirdSecretClicks(0);
+                    setCurrentWish("发财旺旺! 888 UNLOCKED!");
+                } else { setThirdSecretClicks(nextCount); }
+                clearTimeout(window.thirdSecretTimer);
+                window.thirdSecretTimer = setTimeout(() => setThirdSecretClicks(0), 3000);
             };
 
             const handleCatch = (id, wish, e) => {
                 if (e) e.stopPropagation(); 
                 let bonus = 0;
-                let finalWish = wish;
                 setCombo(prev => {
                     const next = prev + 1;
-                    if (next === 18) {
-                        launchFireworks();
-                        bonus = 888;
-                        finalWish = lang === 'zh' ? "连中十八！马力全开！+888" : "18 Hits Streak! Power Up! +888";
-                        setCurrentWish(finalWish);
-                        return 0; 
-                    }
-                    setCurrentWish(wish);
-                    return next;
+                    if (next === 18) { launchFireworks(); bonus = 888; setCurrentWish(lang === 'zh' ? "连中十八！马力全开！+888" : "18 Hits Streak! Power Up! +888"); return 0; }
+                    setCurrentWish(wish); return next;
                 });
                 setScore(prev => prev + 18 + bonus);
                 setActiveHorses(prev => prev.filter(h => h.id !== id));
@@ -266,12 +241,7 @@
                 const rect = gameAreaRef.current.getBoundingClientRect();
                 const clientX = e.clientX || (e.touches && e.touches[0].clientX);
                 const clientY = e.clientY || (e.touches && e.touches[0].clientY);
-                const newFloat = { 
-                    id: Date.now(), 
-                    x: clientX - rect.left, 
-                    y: clientY - rect.top, 
-                    text: bonus > 0 ? `COMBO x18! +888` : `${t.huat} ${wish}` 
-                };
+                const newFloat = { id: Date.now(), x: clientX - rect.left, y: clientY - rect.top, text: bonus > 0 ? `COMBO x18! +888` : `${t.huat} ${wish}` };
                 setFloatingTexts(prev => [...prev, newFloat]);
                 setTimeout(() => setFloatingTexts(prev => prev.filter(f => f.id !== newFloat.id)), 800);
             };
@@ -280,11 +250,10 @@
                 if (!resultPanelRef.current) return;
                 setIsCapturing(true);
                 const shareUrl = "https://cny-2026-visit-malaysia.vercel.app/";
-                // 用户要求的分享文案
                 const caption = "Vibe coding my way into 2026! Check out this CNY mini-game featuring my favorite Bingyen tracks. 🎶✨";
-                
                 try {
                     document.activeElement?.blur();
+                    await new Promise(r => setTimeout(r, 100));
                     const canvas = await html2canvas(resultPanelRef.current, {
                         backgroundColor: '#fffcf5', scale: 2, logging: false, useCORS: true,
                         ignoreElements: (el) => el.classList.contains('no-capture')
@@ -293,54 +262,42 @@
                     const message = lang === 'zh' 
                         ? `${userName || '我'}在《马到功成》接到了 ${score.toLocaleString()} 分好运！\n\n${caption}\n\n快来一起接福：${shareUrl}` 
                         : `${userName || 'I'} captured ${score.toLocaleString()} points of Luck!\n\n${caption}\n\nJoin the fun: ${shareUrl}`;
-
                     if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([], "a.png")] })) {
-                        const res = await fetch(imgData);
-                        const blob = await res.blob();
+                        const res = await fetch(imgData); const blob = await res.blob();
                         const file = new File([blob], "result.png", { type: "image/png" });
-                        await navigator.share({ 
-                            files: [file], 
-                            title: t.title, 
-                            text: message,
-                            url: shareUrl
-                        });
+                        await navigator.share({ files: [file], title: t.title, text: message, url: shareUrl });
                     } else {
-                        const link = document.createElement('a');
-                        link.download = `Result-${score}.png`;
-                        link.href = imgData;
-                        link.click();
+                        const link = document.createElement('a'); link.download = `Result-${score}.png`; link.href = imgData; link.click();
                         setCurrentWish(lang === 'zh' ? "战报已保存！" : "Saved to gallery!");
                     }
                 } catch (err) { console.error(err); }
                 setIsCapturing(false);
             };
 
-            useEffect(() => {
-                setCurrentSongUrl(PLAYLIST[Math.floor(Math.random() * PLAYLIST.length)]);
-            }, []);
-
             const nextSong = (e) => {
                 if(e) e.stopPropagation();
-                startAudio();
+                setHasInteracted(true);
                 const currentIdx = PLAYLIST.indexOf(currentSongUrl);
                 let nextIdx = Math.floor(Math.random() * PLAYLIST.length);
                 if (nextIdx === currentIdx) nextIdx = (nextIdx + 1) % PLAYLIST.length;
                 setCurrentSongUrl(PLAYLIST[nextIdx]);
-                if (audioRef.current) {
-                    audioRef.current.load();
-                    audioRef.current.muted = isMuted;
-                    audioRef.current.play().catch(() => {});
-                }
+                
+                // 给 React 时间更新 src，然后在交互回调中播放
+                setTimeout(() => {
+                    if (audioRef.current) {
+                        audioRef.current.load();
+                        audioRef.current.muted = isMuted;
+                        if (!isMuted) audioRef.current.play().catch(() => {});
+                    }
+                }, 50);
             };
 
             const spawnHorse = useCallback(() => {
                 if (gameState !== 'PLAYING') return;
                 const id = Date.now() + Math.random();
-                const x = Math.random() * 75 + 12; 
-                const y = Math.random() * 60 + 15;
+                const x = Math.random() * 75 + 12; const y = Math.random() * 60 + 15;
                 const sizeBase = window.innerWidth < 640 ? 80 : 120;
-                const sizeVar = window.innerWidth < 640 ? 30 : 40;
-                const size = Math.random() * sizeVar + sizeBase;
+                const size = Math.random() * (window.innerWidth < 640 ? 30 : 40) + sizeBase;
                 const wishPair = HORSE_WISHES[Math.floor(Math.random() * HORSE_WISHES.length)];
                 setActiveHorses(prev => [...prev, { id, x, y, size, wish: wishPair[lang] }]);
                 setTimeout(() => setActiveHorses(prev => prev.filter(h => h.id !== id)), 1300);
@@ -350,67 +307,48 @@
                 let si, ti;
                 if (gameState === 'PLAYING') {
                     si = setInterval(spawnHorse, 650);
-                    ti = setInterval(() => {
-                        setTimeLeft(prev => {
-                            if (prev <= 1) { setGameState('END'); return 0; }
-                            return prev - 1;
-                        });
-                    }, 1000);
+                    ti = setInterval(() => { setTimeLeft(prev => { if (prev <= 1) { setGameState('END'); return 0; } return prev - 1; }); }, 1000);
                 }
                 return () => { clearInterval(si); clearInterval(ti); };
             }, [gameState, spawnHorse]);
 
-            const startGame = (e) => {
-                if (e) e.stopPropagation();
-                startAudio(); setScore(0); setTimeLeft(28); setActiveHorses([]); setCombo(0);
-                setGameState('PLAYING'); setCurrentWish(t.gameHint);
-            };
-
-            const goHome = (e) => {
-                if (e) e.stopPropagation();
-                startAudio();
-                setGameState('START');
-                setCombo(0);
-            };
-
-            const toggleMute = (e) => {
-                e.stopPropagation();
-                const nextMute = !isMuted;
-                setIsMuted(nextMute);
-                if(audioRef.current) {
-                    audioRef.current.muted = nextMute;
-                    if(!nextMute) audioRef.current.play().catch(() => {});
-                }
-            };
+            const startGame = (e) => { if (e) e.stopPropagation(); startAudio(); setScore(0); setTimeLeft(28); setActiveHorses([]); setCombo(0); setGameState('PLAYING'); setCurrentWish(t.gameHint); };
+            const goHome = (e) => { if (e) e.stopPropagation(); startAudio(); setGameState('START'); setCombo(0); };
+            const toggleMute = (e) => { e.stopPropagation(); startAudio(); const nextMute = !isMuted; setIsMuted(nextMute); if(audioRef.current) { audioRef.current.muted = nextMute; if(!nextMute) audioRef.current.play().catch(() => {}); else audioRef.current.pause(); } };
 
             return (
-                <div className="h-full w-full bg-[#b91c1c] font-sans text-white overflow-hidden flex flex-col items-center justify-center p-1 sm:p-2 relative" onClick={startAudio}>
-                    
+                <div 
+                    className="h-full w-full bg-[#b91c1c] font-sans text-white overflow-hidden flex flex-col items-center justify-center p-1 sm:p-2 relative" 
+                    onClick={startAudio}
+                    onTouchStart={startAudio}
+                >
+                    {/* 秘籍区域 */}
                     <div className="fixed top-0 left-0 w-24 h-24 z-[99999] cursor-default bg-transparent" onClick={triggerSecret} />
                     <div className="fixed bottom-0 right-0 w-24 h-24 z-[99999] cursor-default bg-transparent" onClick={triggerSecondarySecret} />
+                    <div className="fixed bottom-0 left-0 w-24 h-24 z-[99999] cursor-default bg-transparent" onClick={triggerThirdSecret} />
 
-                    {hasInteracted && currentSongUrl && <audio ref={audioRef} src={currentSongUrl} autoPlay loop muted={isMuted} />}
+                    {/* 关键修复：Audio 标签始终渲染，不使用条件判断，并增加 preload */}
+                    <audio 
+                        ref={audioRef} 
+                        src={currentSongUrl} 
+                        loop 
+                        muted={isMuted} 
+                        preload="auto" 
+                        crossOrigin="anonymous" 
+                    />
 
                     <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
                         <div className="bg-black/40 p-1.5 rounded-full backdrop-blur-md border border-white/20 flex items-center gap-2 sm:gap-3">
-                            <button onClick={goHome} className="bg-red-600 hover:bg-red-500 text-yellow-300 w-8 h-8 rounded-full flex items-center justify-center border border-white/10 transition-colors shadow-lg active:scale-90" title="Home">
-                                <Icons.Home />
-                            </button>
+                            <button onClick={goHome} className="bg-red-600 hover:bg-red-500 text-yellow-300 w-8 h-8 rounded-full flex items-center justify-center border border-white/10 transition-colors shadow-lg active:scale-90"><Icons.Home /></button>
                             <button onClick={(e) => { e.stopPropagation(); setLang(lang === 'zh' ? 'en' : 'zh'); }} className="bg-white/10 text-[9px] font-black w-8 h-8 rounded-full uppercase flex items-center justify-center border border-white/10">{lang === 'zh' ? 'EN' : '中'}</button>
-                            <button onClick={nextSong} className="bg-yellow-600 hover:bg-yellow-500 text-white w-8 h-8 rounded-full flex items-center justify-center border border-white/10 shadow-lg active:scale-90" title="Next Song">
-                                <Icons.SkipForward />
-                            </button>
+                            <button onClick={nextSong} className="bg-yellow-600 hover:bg-yellow-500 text-white w-8 h-8 rounded-full flex items-center justify-center border border-white/10 shadow-lg active:scale-90" title="Next Song"><Icons.SkipForward /></button>
                             <button onClick={toggleMute} className="bg-yellow-500 w-8 h-8 rounded-full text-red-800 flex items-center justify-center">{isMuted ? <Icons.VolumeX /> : <Icons.Volume2 />}</button>
                         </div>
                     </div>
 
                     <div className="game-panel w-full h-full max-w-[72vw] max-h-[72vh] bg-[#fffcf5] rounded-[1.5rem] sm:rounded-[2.5rem] shadow-2xl border-[4px] sm:border-[8px] border-yellow-500 relative overflow-hidden flex flex-col z-10">
                         <div className="game-header bg-gradient-to-r from-red-800 via-red-600 to-red-800 p-2 flex justify-between items-center text-yellow-400 font-black z-10 shadow-md text-[9px] sm:text-xs">
-                            <div className="bg-yellow-500/20 px-2 py-1 rounded-full border border-yellow-500/30 flex items-center gap-1">
-                                <Icons.Trophy /> 
-                                <span>{score.toLocaleString()}</span>
-                                {combo > 1 && <span className="ml-2 text-white animate-pulse">Combo {combo}</span>}
-                            </div>
+                            <div className="bg-yellow-500/20 px-2 py-1 rounded-full border border-yellow-500/30 flex items-center gap-1"><Icons.Trophy /> <span>{score.toLocaleString()}</span> {combo > 1 && <span className="ml-2 text-white animate-pulse">Combo {combo}</span>}</div>
                             <div className="text-[10px] sm:text-xl tracking-tighter sm:tracking-widest uppercase font-serif flex-grow text-center">{t.title}</div>
                             <div className="bg-black/20 px-2 py-1 rounded-full border border-white/20 flex items-center gap-1"><Icons.Timer /> <span>{timeLeft}s</span></div>
                         </div>
@@ -420,10 +358,10 @@
                                 <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-red-950/40 backdrop-blur-[2px] p-2 text-center">
                                     <div className="bg-white/95 p-4 sm:p-10 rounded-[1.5rem] sm:rounded-[2rem] border-2 border-yellow-500 shadow-2xl scale-in-center flex flex-col items-center max-w-[95%] sm:max-w-md" onClick={(e) => e.stopPropagation()}>
                                         <div className="text-4xl sm:text-5xl mb-2 sm:mb-4 animate-bounce">🐎</div>
-                                        <h1 className="text-2xl sm:text-5xl font-black text-red-600 mb-1 tracking-tighter uppercase">{t.title}</h1>
+                                        <h1 className="text-3xl sm:text-6xl font-black mb-1 tracking-tighter uppercase headline-shining">{t.title}</h1>
                                         <p className="text-red-800 font-bold mb-4 sm:mb-8 opacity-70 text-[8px] sm:text-[10px]">{t.subtitle}</p>
                                         <button onClick={startGame} className="bg-red-600 text-yellow-300 px-6 sm:px-8 py-3 sm:py-4 rounded-full text-lg sm:text-4xl font-black shadow-[0_4px_0_#7f1d1d] active:translate-y-1 active:shadow-none uppercase flex items-center gap-2"><Icons.Play /> {t.startBtn}</button>
-                                        
+                                        <div className="mt-4 sm:mt-6 text-red-600 font-bold text-[9px] sm:text-sm animate-pulse-soft">{t.soundHint}</div>
                                         <div className="mt-4 sm:mt-8 pt-2 sm:pt-4 border-t border-red-900/10 w-full text-[7px] sm:text-[10px] text-red-900/50 font-medium leading-tight select-none">
                                             <p className="mb-1">This game is for 2026 CNY celebration only. Non-commercial use. Developer not liable for any misuse. The background music copyright belongs to Malaysian digital creator Bingyen.</p>
                                             <p className="mb-2">本游戏仅供2026马年新春庆祝使用，禁止商用。开发者不承担误用责任。</p>
@@ -437,23 +375,9 @@
                             {gameState === 'PLAYING' && (
                                 <div className="relative h-full w-full">
                                     {activeHorses.map(horse => (
-                                        <button key={horse.id} onClick={(e) => handleCatch(horse.id, horse.wish, e)} 
-                                            style={{ 
-                                                left: `${horse.x}%`, 
-                                                top: `${horse.y}%`, 
-                                                width: `clamp(60px, ${horse.size}px, 110px)`, 
-                                                height: `clamp(60px, ${horse.size}px, 110px)` 
-                                            }} 
-                                            className="absolute animate-bounce-short transform -translate-x-1/2 -translate-y-1/2 transition-transform active:scale-125"
-                                        >
-                                            <span className="text-5xl sm:text-9xl select-none block drop-shadow-lg">🐎</span>
-                                        </button>
+                                        <button key={horse.id} onClick={(e) => handleCatch(horse.id, horse.wish, e)} style={{ left: `${horse.x}%`, top: `${horse.y}%`, width: `clamp(60px, ${horse.size}px, 110px)`, height: `clamp(60px, ${horse.size}px, 110px)` }} className="absolute animate-bounce-short transform -translate-x-1/2 -translate-y-1/2 transition-transform active:scale-125"><span className="text-5xl sm:text-9xl select-none block drop-shadow-lg">🐎</span></button>
                                     ))}
-                                    <div className="absolute bottom-2 sm:bottom-8 left-0 w-full flex justify-center px-4">
-                                        <div className="bg-red-600 text-yellow-300 px-4 py-2 rounded-xl font-black text-base sm:text-4xl shadow-2xl border-2 border-yellow-400 text-center uppercase tracking-tighter">
-                                            {currentWish || t.gameHint}
-                                        </div>
-                                    </div>
+                                    <div className="absolute bottom-2 sm:bottom-8 left-0 w-full flex justify-center px-4"><div className="bg-red-600 text-yellow-300 px-4 py-2 rounded-xl font-black text-base sm:text-4xl shadow-2xl border-2 border-yellow-400 text-center uppercase tracking-tighter">{currentWish || t.gameHint}</div></div>
                                 </div>
                             )}
 
@@ -461,39 +385,34 @@
                                 <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-red-950/95 backdrop-blur-lg p-2 text-center" onClick={(e) => e.stopPropagation()}>
                                     <div ref={resultPanelRef} className="bg-[#fffcf5] p-4 sm:p-8 rounded-[1.5rem] sm:rounded-[2rem] border-4 border-yellow-500 shadow-2xl scale-in-center flex flex-col items-center text-red-900 w-full max-w-sm">
                                         <div className="text-3xl mb-1">🧧</div>
-                                        <h2 className="text-xl sm:text-4xl font-black text-red-600 mb-1 italic uppercase tracking-tighter">{t.resultTitle}</h2>
-                                        <div className="w-full mt-2 flex flex-col items-center">
-                                            <div className="text-red-800/60 text-[8px] font-bold uppercase tracking-widest mb-1">{t.nameLabel}</div>
-                                            <input type="text" value={userName} onChange={(e) => setUserName(e.target.value)} placeholder={t.namePlaceholder} className="w-4/5 bg-red-100/50 border-b-2 border-red-200 text-center text-base sm:text-xl font-black text-red-700 py-1 no-capture" />
-                                            <div className="hidden block-in-capture text-xl font-black text-red-700 mb-2">{userName || 'GUEST'}</div>
-                                        </div>
-                                        <p className="text-[10px] sm:text-sm mt-4 mb-1 uppercase font-bold opacity-70">{t.resultBody}</p>
-                                        <span className="text-3xl sm:text-6xl font-black text-red-600 mb-2 block">{score.toLocaleString()}</span> 
+                                        <h2 className="text-xl sm:text-4xl font-black mb-1 italic uppercase tracking-tighter text-red-600">{t.resultTitle}</h2>
                                         
-                                        <div className="relative mb-4 group w-full px-4">
-                                            <p className="text-[8px] sm:text-[10px] font-mono opacity-60 hover:opacity-100 select-text cursor-text bg-red-50 py-1 rounded border border-red-100/50 break-all transition-opacity" onClick={(e) => e.stopPropagation()}>
-                                                https://cny-2026-visit-malaysia.vercel.app/
-                                            </p>
-                                            <div className="absolute -top-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 text-[6px] uppercase font-bold text-red-400 pointer-events-none transition-opacity">Select to copy</div>
+                                        <div className="w-full mt-2 flex flex-col items-center min-h-[50px] justify-center">
+                                            <div className="text-red-800/60 text-[8px] font-bold uppercase tracking-widest mb-1">{t.nameLabel}</div>
+                                            {!isCapturing ? (
+                                                <input type="text" value={userName} onChange={(e) => setUserName(e.target.value)} placeholder={t.namePlaceholder} className="w-4/5 bg-red-100/50 border-b-2 border-red-200 text-center text-base sm:text-xl font-black text-red-700 py-1" />
+                                            ) : (
+                                                <div className="text-xl sm:text-2xl font-black text-red-700 py-1 uppercase">{userName || 'GUEST'}</div>
+                                            )}
                                         </div>
-
+                                        <p className="text-[10px] sm:text-sm mt-6 mb-1 uppercase font-bold opacity-70">{t.resultBody}</p>
+                                        <span className="text-4xl sm:text-7xl font-black text-red-600 mb-6 block leading-none">{score.toLocaleString()}</span> 
+                                        <div className="relative mb-6 group w-full px-4 mt-2"><p className="text-[8px] sm:text-[10px] font-mono opacity-60 select-text cursor-text bg-red-50 py-1.5 rounded border border-red-100/50 break-all transition-opacity">https://cny-2026-visit-malaysia.vercel.app/</p></div>
                                         <div className="flex flex-col gap-2 w-full no-capture">
                                             <button onClick={startGame} className="bg-red-600 text-yellow-300 w-full py-2.5 rounded-full text-base font-black shadow-lg flex items-center justify-center gap-2 uppercase tracking-tighter active:scale-95"><Icons.Rotate /> {t.retry}</button>
-                                            <button onClick={captureAndShare} disabled={isCapturing} className={`bg-yellow-500 text-red-900 w-full py-2.5 rounded-full text-base font-black shadow-md flex items-center justify-center gap-2 uppercase tracking-tighter active:scale-95 ${isCapturing ? 'opacity-50' : ''}`}>
-                                                {isCapturing ? t.sharingHint : <><Icons.Camera /> {t.shareBtn}</>}
-                                            </button>
+                                            <button onClick={captureAndShare} disabled={isCapturing} className={`bg-yellow-500 text-red-900 w-full py-2.5 rounded-full text-base font-black shadow-md flex items-center justify-center gap-2 uppercase tracking-tighter active:scale-95 ${isCapturing ? 'opacity-50' : ''}`}>{isCapturing ? t.sharingHint : <><Icons.Camera /> {t.shareBtn}</>}</button>
                                         </div>
                                     </div>
                                 </div>
                             )}
-
-                            {floatingTexts.map(f => <div key={f.id} className="absolute pointer-events-none text-base sm:text-3xl font-black text-red-600 animate-float-up-fast z-40 uppercase tracking-tighter" style={{ left: f.x, top: f.y }}>{f.text}</div>)}
+                            {floatingTexts.map(f => (
+                                <div key={f.id} className="absolute pointer-events-none text-base sm:text-3xl font-black text-red-600 animate-float-up-fast z-40 uppercase tracking-tighter" style={{ left: f.x, top: f.y }}>{f.text}</div>
+                            ))}
                         </div>
                     </div>
                 </div>
             );
         };
-
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<HorseGameApp />);
     </script>
